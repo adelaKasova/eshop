@@ -33,8 +33,8 @@ export const SortingTabs = () => {
                             className={`
                 px-6 py-3 font-medium text-sm transition-colors border-b-2
                 ${isSelected
-                                    ? 'border-primary text-primary'
-                                    : 'border-transparent text-text hover:text-primary hover:border-gray-300'
+                                    ? 'border-primary text-black'
+                                    : 'border-transparent text-text hover:text-black hover:border-gray-300'
                                 }
               `}
                         >

@@ -34,7 +34,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             </div>
 
             <div className="flex flex-col flex-grow">
-                <h3 className="text-base font-semibold mb-2 line-clamp-2 min-h-[3rem]" title={product.name}>
+                <h3 className="text-black font-semibold mb-2 line-clamp-2 min-h-[3rem]" title={product.name}>
                     {product.name}
                 </h3>
 
@@ -42,7 +42,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
                     <Rating rating={product.rating} />
                 </div>
 
-                <p className="text-sm text-text-light mb-2 line-clamp-3 leading-snug min-h-[3.75rem]">
+                <p className="text-sm text-black mb-2 line-clamp-3 leading-snug min-h-[3.75rem]">
                     {decodeHtml(product.spec)}
                 </p>
 
@@ -53,11 +53,11 @@ export const ProductCard = ({ product }: ProductCardProps) => {
                 )}
 
                 <div className="mt-auto mb-2 flex flex-col">
-                    <span className="text-price text-xl font-bold">
+                    <span className="text-price text-black text-xl font-bold">
                         {decodeHtml(product.price)}
                     </span>
                     {product.cprice && (
-                        <span className="text-price-original text-sm line-through">
+                        <span className="text-black text-sm line-through">
                             {decodeHtml(product.cprice)}
                         </span>
                     )}

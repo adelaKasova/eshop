@@ -43,7 +43,7 @@ export const CategoryFilters = () => {
               px-4 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap
               ${selectedCategory === category
                                 ? 'bg-primary text-white hover:bg-primary-hover'
-                                : 'bg-gray-100 text-text hover:bg-gray-200'
+                                : 'bg-gray-200 text-black hover:bg-gray-300'
                             }
             `}
                     >

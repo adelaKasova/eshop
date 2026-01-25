@@ -32,7 +32,7 @@ export const ProductCarousel = ({ products }: ProductCarouselProps) => {
 
     return (
         <div className="my-8">
-            <h2 className="text-2xl font-light text-primary mb-4">Nejprodávanější</h2>
+            <h2 className="text-2xl font-light text-black mb-4">Nejprodávanější</h2>
 
             <div className="bg-secondary p-4 flex items-center gap-4">
                 {/* Prev Button */}
