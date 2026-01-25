@@ -1,69 +1,79 @@
 'use client';
 
-import { Tag } from '@carbon/react';
 import { Product } from '@/types/product';
 import { Rating } from '../Rating/Rating';
 import { BuyButton } from '../BuyButton/BuyButton';
-import { formatPrice } from '@/utils/formatters';
-import { decodeHtml } from '@/utils/htmlParser';
-import styles from './ProductCard.module.css';
 import Image from 'next/image';
 
 interface ProductCardProps {
     product: Product;
 }
 
+// Simple HTML entity decode helper for this component level
+const decodeHtml = (html: string) => {
+    return html.replace(/&nbsp;/g, ' ').replace(/&gt;/g, '>').replace(/&lt;/g, '<');
+};
+
 export const ProductCard = ({ product }: ProductCardProps) => {
-    const stockColor = product.avail_color ? `#${product.avail_color}` : 'var(--color-text-light)';
+    const stockColor = product.avail_color ? `#${product.avail_color}` : '#666666';
 
     return (
-        <article className={styles.card}>
-            <div className={styles.imageContainer}>
+        <article className="
+      group flex flex-col h-full p-4 bg-white border border-transparent 
+      transition-all duration-300 hover:shadow-lg hover:border-gray-200 hover:z-10
+    ">
+            <div className="flex justify-center mb-4 h-48 relative">
                 <Image
                     src={product.img}
                     alt={product.name}
                     width={200}
                     height={200}
-                    className={styles.image}
-                    unoptimized // External images from Alza
+                    className="object-contain max-h-full"
+                    unoptimized // Alza images are external
                 />
             </div>
 
-            <div className={styles.content}>
-                <h3 className={styles.title} title={product.name}>
+            <div className="flex flex-col flex-grow">
+                <h3 className="text-base font-semibold mb-2 line-clamp-2 min-h-[3rem]" title={product.name}>
                     {product.name}
                 </h3>
 
-                <div className={styles.rating}>
+                <div className="mb-2">
                     <Rating rating={product.rating} />
                 </div>
 
-                <p className={styles.spec} dangerouslySetInnerHTML={{ __html: product.spec }} />
+                <p className="text-sm text-text-light mb-2 line-clamp-3 leading-snug min-h-[3.75rem]">
+                    {decodeHtml(product.spec)}
+                </p>
 
-                {/* Example of optional promo badge */}
                 {product.promo_cnt > 0 && (
-                    <Tag type="green" className={styles.badge}>
+                    <span className="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded mb-2 self-start font-medium">
                         + ZDARMA
-                    </Tag>
+                    </span>
                 )}
 
-                <div className={styles.priceContainer}>
-                    <span className={styles.currentPrice} dangerouslySetInnerHTML={{ __html: formatPrice(product.price) }} />
+                <div className="mt-auto mb-2 flex flex-col">
+                    <span className="text-price text-xl font-bold">
+                        {decodeHtml(product.price)}
+                    </span>
                     {product.cprice && (
-                        <span className={styles.originalPrice}>
+                        <span className="text-price-original text-sm line-through">
                             {decodeHtml(product.cprice)}
                         </span>
                     )}
                 </div>
 
-                <div className={styles.actions}>
-                    <div className={styles.buyButton}>
+                <div className="flex mb-2">
+                    <div className="w-full">
                         <BuyButton />
                     </div>
                 </div>
 
-                <div className={styles.stock} style={{ color: stockColor }}>
-                    <span dangerouslySetInnerHTML={{ __html: decodeHtml(product.avail) }} />
+                <div
+                    className="text-sm font-medium text-right min-h-[1.25rem]"
+                    style={{ color: stockColor }}
+                >
+                    {decodeHtml(product.avail)}
                 </div>
             </div>
         </article>

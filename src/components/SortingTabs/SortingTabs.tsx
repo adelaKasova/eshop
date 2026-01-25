@@ -1,7 +1,5 @@
 'use client';
 
-import { Tabs, Tab, TabList } from '@carbon/react';
-import styles from './SortingTabs.module.css';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 export const SortingTabs = () => {
@@ -10,6 +8,13 @@ export const SortingTabs = () => {
     const sortParam = searchParams.get('sort');
     const selectedIndex = sortParam ? parseInt(sortParam) : 0;
 
+    const TABS = [
+        'TOP',
+        'Nejprodávanější',
+        'Od nejlevnějšího',
+        'Od nejdražšího'
+    ];
+
     const handleChange = (index: number) => {
         const params = new URLSearchParams(searchParams.toString());
         params.set('sort', index.toString());
@@ -17,18 +22,27 @@ export const SortingTabs = () => {
     };
 
     return (
-        <div className={styles.container}>
-            <Tabs
-                selectedIndex={selectedIndex}
-                onChange={(evt) => handleChange(evt.selectedIndex)}
-            >
-                <TabList aria-label="Sort products">
-                    <Tab>TOP</Tab>
-                    <Tab>Nejprodávanější</Tab>
-                    <Tab>Od nejlevnějšího</Tab>
-                    <Tab>Od nejdražšího</Tab>
-                </TabList>
-            </Tabs>
+        <div className="my-8 border-b border-gray-200">
+            <div className="flex space-x-1">
+                {TABS.map((label, index) => {
+                    const isSelected = selectedIndex === index;
+                    return (
+                        <button
+                            key={index}
+                            onClick={() => handleChange(index)}
+                            className={`
+                px-6 py-3 font-medium text-sm transition-colors border-b-2
+                ${isSelected
+                                    ? 'border-primary text-primary'
+                                    : 'border-transparent text-text hover:text-primary hover:border-gray-300'
+                                }
+              `}
+                        >
+                            {label}
+                        </button>
+                    );
+                })}
+            </div>
         </div>
     );
 };

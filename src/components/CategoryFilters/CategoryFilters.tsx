@@ -1,10 +1,7 @@
 'use client';
 
-import { Tag } from '@carbon/react';
-import styles from './CategoryFilters.module.css';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-// Mock categories as we don't have an API for them
 const CATEGORIES = [
     'Macbook',
     'Herní',
@@ -23,7 +20,7 @@ const CATEGORIES = [
 export const CategoryFilters = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const selectedCategory = searchParams.get('category') || '';
+    const selectedCategory = searchParams.get('category');
 
     const handleSelect = (category: string) => {
         const params = new URLSearchParams(searchParams.toString());
@@ -36,17 +33,22 @@ export const CategoryFilters = () => {
     };
 
     return (
-        <div className={styles.container}>
-            <div className={styles.scrollContainer}>
+        <div className="mb-8 overflow-hidden w-full">
+            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
                 {CATEGORIES.map((category) => (
-                    <Tag
+                    <button
                         key={category}
-                        className={styles.tag}
-                        type={selectedCategory === category ? 'blue' : 'gray'}
                         onClick={() => handleSelect(category)}
+                        className={`
+              px-4 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap
+              ${selectedCategory === category
+                                ? 'bg-primary text-white hover:bg-primary-hover'
+                                : 'bg-gray-100 text-text hover:bg-gray-200'
+                            }
+            `}
                     >
                         {category}
-                    </Tag>
+                    </button>
                 ))}
             </div>
         </div>
