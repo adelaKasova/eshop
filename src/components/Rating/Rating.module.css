@@ -1,0 +1,17 @@
+.rating {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.starFilled {
+    fill: #f5a623;
+    width: 16px;
+    height: 16px;
+}
+
+.starEmpty {
+    fill: #e0e0e0;
+    width: 16px;
+    height: 16px;
+}

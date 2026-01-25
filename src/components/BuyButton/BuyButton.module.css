@@ -1,0 +1,5 @@
+/* Override Carbon button width */
+.container :global(.cds--menu-button) {
+    width: 100%;
+    justify-content: space-between;
+}

@@ -1,0 +1,44 @@
+.carouselContainer {
+    margin: 2rem 0;
+}
+
+.title {
+    color: var(--color-primary);
+    font-size: var(--font-size-xl);
+    margin-bottom: 1rem;
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background-color: var(--color-background-secondary);
+    padding: 1rem;
+}
+
+.trackContainer {
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.track {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+}
+
+@media (max-width: 1024px) {
+    .track {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .track {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+
+.item {
+    min-width: 0;
+}
