@@ -34,15 +34,15 @@ export const CategoryFilters = () => {
 
     return (
         <div className="mb-8 overflow-hidden w-full">
-            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4">
                 {CATEGORIES.map((category) => (
                     <button
                         key={category}
                         onClick={() => handleSelect(category)}
                         className={`
-              px-4 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap
+              px-4 py-2 text-sm font-medium transition-colors whitespace-nowrap
               ${selectedCategory === category
-                                ? 'bg-primary text-white hover:bg-primary-hover'
+                                ? 'bg-gray-400 text-black hover:bg-primary-hover'
                                 : 'bg-gray-200 text-black hover:bg-gray-300'
                             }
             `}
