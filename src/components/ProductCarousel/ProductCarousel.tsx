@@ -11,16 +11,11 @@ interface ProductCarouselProps {
 export const ProductCarousel = ({ products }: ProductCarouselProps) => {
     const { currentIndex, next, prev } = useCarousel(products.length);
 
-    // We want to show 5 items.
-    // For infinite loop effect without complex animation libraries, 
-    // we can just rotate the array for display or use index math.
-    // "Simple move 1 item" logic:
-
     const getVisibleProducts = () => {
         if (products.length === 0) return [];
 
         const items = [];
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 4; i++) {
             items.push(products[(currentIndex + i) % products.length]);
         }
         return items;
@@ -48,7 +43,7 @@ export const ProductCarousel = ({ products }: ProductCarouselProps) => {
 
                 {/* Track */}
                 <div className="flex-grow overflow-hidden">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4">
                         {visibleProducts.map((product, index) => (
                             // Using index in key here is acceptable for simple visual rotation 
                             // where we don't need to persist internal state of cards tightly during animation
