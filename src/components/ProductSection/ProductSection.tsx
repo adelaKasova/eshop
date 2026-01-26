@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { getProducts } from '@/services/productService';
 import { Product } from '@/types/product';
 import { useSearchParams } from 'next/navigation';
@@ -12,35 +12,50 @@ import { Header } from '../Header/Header';
 
 export const ProductSection = () => {
     const [products, setProducts] = useState<Product[]>([]);
+    const [carouselProducts, setCarouselProducts] = useState<Product[]>([]);
     const [categoryName, setCategoryName] = useState<string | null>(null);
-    const [loading, setLoading] = useState(true);
+    const [initialLoading, setInitialLoading] = useState(true);
+    const [gridLoading, setGridLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const isInitialLoad = useRef(true);
 
     const searchParams = useSearchParams();
     const sortParam = searchParams.get('sort');
-    // Category param could filter API if supported, or just client-side logic
     const categoryParam = searchParams.get('category');
 
     useEffect(() => {
         const fetchData = async () => {
-            setLoading(true);
+            // On first load, show full loading. On subsequent loads, only grid loading.
+            if (isInitialLoad.current) {
+                setInitialLoading(true);
+            } else {
+                setGridLoading(true);
+            }
             setError(null);
+
             try {
                 const orderBy = sortParam ? parseInt(sortParam) : 0;
                 const result = await getProducts({ orderBy });
                 setProducts(result.products);
-                setCategoryName(result.categoryName);
+
+                // Only update header/carousel data on initial load
+                if (isInitialLoad.current) {
+                    setCategoryName(result.categoryName);
+                    setCarouselProducts(result.products.slice(0, 10));
+                    isInitialLoad.current = false;
+                }
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'Failed to load products');
             } finally {
-                setLoading(false);
+                setInitialLoading(false);
+                setGridLoading(false);
             }
         };
 
         fetchData();
     }, [sortParam, categoryParam]);
 
-    if (loading) {
+    if (initialLoading) {
         return (
             <div className="flex justify-center py-16">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
@@ -60,16 +75,13 @@ export const ProductSection = () => {
         );
     }
 
-    // Slice for carousel - e.g., top 10
-    const carouselProducts = products.slice(0, 10);
-
     return (
         <>
             <Header categoryName={categoryName} />
             <CategoryFilters />
             <ProductCarousel products={carouselProducts} />
             <SortingTabs />
-            <ProductGrid products={products} />
+            <ProductGrid products={products} loading={gridLoading} />
         </>
     );
 };
