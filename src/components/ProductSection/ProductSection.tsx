@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { getProducts } from '@/services/productService';
 import { Product } from '@/types/product';
 import { useSearchParams } from 'next/navigation';
@@ -11,49 +11,59 @@ import { ProductGrid } from '../ProductGrid/ProductGrid';
 import { Header } from '../Header/Header';
 
 export const ProductSection = () => {
-    const [products, setProducts] = useState<Product[]>([]);
+    // Carousel state (loads with sort 0, only reloads on category change)
     const [carouselProducts, setCarouselProducts] = useState<Product[]>([]);
     const [categoryName, setCategoryName] = useState<string | null>(null);
-    const [initialLoading, setInitialLoading] = useState(true);
-    const [gridLoading, setGridLoading] = useState(false);
+    const [carouselLoading, setCarouselLoading] = useState(true);
+
+    // Grid state (reloads on sort or category change)
+    const [gridProducts, setGridProducts] = useState<Product[]>([]);
+    const [gridLoading, setGridLoading] = useState(true);
+
     const [error, setError] = useState<string | null>(null);
-    const isInitialLoad = useRef(true);
 
     const searchParams = useSearchParams();
     const sortParam = searchParams.get('sort');
     const categoryParam = searchParams.get('category');
 
+    // Fetch carousel data - only depends on category, always uses sort 0
     useEffect(() => {
-        const fetchData = async () => {
-            // On first load, show full loading. On subsequent loads, only grid loading.
-            if (isInitialLoad.current) {
-                setInitialLoading(true);
-            } else {
-                setGridLoading(true);
+        const fetchCarouselData = async () => {
+            setCarouselLoading(true);
+            try {
+                const result = await getProducts({ orderBy: 0 });
+                setCarouselProducts(result.products.slice(0, 10));
+                setCategoryName(result.categoryName);
+            } catch (err) {
+                setError(err instanceof Error ? err.message : 'Failed to load carousel');
+            } finally {
+                setCarouselLoading(false);
             }
-            setError(null);
+        };
 
+        fetchCarouselData();
+    }, [categoryParam]);
+
+    // Fetch grid data - depends on sort and category
+    useEffect(() => {
+        const fetchGridData = async () => {
+            setGridLoading(true);
             try {
                 const orderBy = sortParam ? parseInt(sortParam) : 0;
                 const result = await getProducts({ orderBy });
-                setProducts(result.products);
-
-                // Only update header/carousel data on initial load
-                if (isInitialLoad.current) {
-                    setCategoryName(result.categoryName);
-                    setCarouselProducts(result.products.slice(0, 10));
-                    isInitialLoad.current = false;
-                }
+                setGridProducts(result.products);
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'Failed to load products');
             } finally {
-                setInitialLoading(false);
                 setGridLoading(false);
             }
         };
 
-        fetchData();
+        fetchGridData();
     }, [sortParam, categoryParam]);
+
+    // Show full loading only on initial load (both carousel and grid loading)
+    const initialLoading = carouselLoading && gridLoading && carouselProducts.length === 0;
 
     if (initialLoading) {
         return (
@@ -81,7 +91,7 @@ export const ProductSection = () => {
             <CategoryFilters />
             <ProductCarousel products={carouselProducts} />
             <SortingTabs />
-            <ProductGrid products={products} loading={gridLoading} />
+            <ProductGrid products={gridProducts} loading={gridLoading} />
         </>
     );
 };
