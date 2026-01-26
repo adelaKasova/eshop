@@ -28,8 +28,9 @@ export const ProductCard = ({ product }: ProductCardProps) => {
                     alt={product.name}
                     width={200}
                     height={200}
+                    style={{ width: 'auto', height: 'auto' }}
                     className="object-contain max-h-full"
-                    unoptimized // Alza images are external
+                    unoptimized
                 />
             </div>
 
