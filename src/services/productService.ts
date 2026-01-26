@@ -1,4 +1,9 @@
-import { Product, ApiResponse, FilterParameters } from '../types/product';
+import { Product, ApiResponse, FilterParameters, Breadcrumb } from '../types/product';
+
+export interface ProductsResult {
+    products: Product[];
+    categoryName: string | null;
+}
 
 // Point to local proxy
 const API_URL = '/api/products';
@@ -20,7 +25,7 @@ const DEFAULT_FILTER: FilterParameters = {
 
 export async function getProducts(
     filterOverrides: Partial<FilterParameters> = {}
-): Promise<Product[]> {
+): Promise<ProductsResult> {
     try {
         // Client-side fetch to local proxy
         // Browser automatically handles Host, Origin, Cookie, etc. relative to current domain
@@ -48,7 +53,13 @@ export async function getProducts(
             throw new Error(data.msg || 'Unknown API error');
         }
 
-        return data.data;
+        // Extract category name from breadcrumbs
+        const categoryName = data.breadcrumbs?.[0]?.category?.name ?? null;
+
+        return {
+            products: data.data,
+            categoryName,
+        };
     } catch (error) {
         console.error('Failed to fetch products:', error);
         throw error;

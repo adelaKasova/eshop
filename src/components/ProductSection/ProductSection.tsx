@@ -8,9 +8,11 @@ import { CategoryFilters } from '../CategoryFilters/CategoryFilters';
 import { ProductCarousel } from '../ProductCarousel/ProductCarousel';
 import { SortingTabs } from '../SortingTabs/SortingTabs';
 import { ProductGrid } from '../ProductGrid/ProductGrid';
+import { Header } from '../Header/Header';
 
 export const ProductSection = () => {
     const [products, setProducts] = useState<Product[]>([]);
+    const [categoryName, setCategoryName] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -25,8 +27,9 @@ export const ProductSection = () => {
             setError(null);
             try {
                 const orderBy = sortParam ? parseInt(sortParam) : 0;
-                const data = await getProducts({ orderBy });
-                setProducts(data);
+                const result = await getProducts({ orderBy });
+                setProducts(result.products);
+                setCategoryName(result.categoryName);
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'Failed to load products');
             } finally {
@@ -62,6 +65,7 @@ export const ProductSection = () => {
 
     return (
         <>
+            <Header categoryName={categoryName} />
             <CategoryFilters />
             <ProductCarousel products={carouselProducts} />
             <SortingTabs />

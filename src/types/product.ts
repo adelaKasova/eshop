@@ -30,9 +30,28 @@ export interface FilterParameters {
     branchId: string;
 }
 
+export interface BreadcrumbCategory {
+    name: string;
+    clientAction?: {
+        href: string;
+        appLink: string;
+        enabled: boolean;
+    };
+    meta?: {
+        href: string;
+        rel: string[];
+        method: string;
+    };
+}
+
+export interface Breadcrumb {
+    category: BreadcrumbCategory;
+}
+
 export interface ApiResponse {
     err: number;
     msg: string | null;
     data: Product[];
     data_cnt: number;
+    breadcrumbs?: Breadcrumb[];
 }

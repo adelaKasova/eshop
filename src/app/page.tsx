@@ -1,11 +1,9 @@
-import { Header } from '@/components/Header/Header';
 import { ProductSection } from '@/components/ProductSection/ProductSection';
 import { Suspense } from 'react';
 
 export default function Home() {
   return (
     <main className="container mx-auto px-4 max-w-7xl min-h-screen bg-white">
-      <Header />
       <Suspense
         fallback={
           <div className="flex justify-center py-16">
