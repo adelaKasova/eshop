@@ -96,7 +96,7 @@ export const ProductSection = () => {
             <Header categoryName={categoryName} />
           </Suspense>
 
-            <CategoryFilters />
+            <CategoryFilters categoryParam={categoryParam} setCategoryParam={setCategoryParam}/>
           <Suspense
             fallback={
               <div className="flex justify-center py-16">
