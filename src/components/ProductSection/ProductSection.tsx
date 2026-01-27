@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { getProducts } from '@/services/productService';
 import { Product } from '@/types/product';
 import { useSearchParams } from 'next/navigation';
@@ -22,9 +22,8 @@ export const ProductSection = () => {
 
     const [error, setError] = useState<string | null>(null);
 
-    const searchParams = useSearchParams();
-    const sortParam = searchParams.get('sort');
-    const categoryParam = searchParams.get('category');
+    const [sortParam, setSortParam] = useState<number | null>(0);
+    const [categoryParam, setCategoryParam] = useState<number | null>(null);
 
     // Fetch carousel data - only depends on category, always uses sort 0
     useEffect(() => {
@@ -87,11 +86,36 @@ export const ProductSection = () => {
 
     return (
         <>
+          <Suspense
+            fallback={
+              <div className="flex justify-center py-16">
+                <div className="text-gray-500"></div>
+              </div>
+            }
+          >
             <Header categoryName={categoryName} />
+          </Suspense>
+
             <CategoryFilters />
+          <Suspense
+            fallback={
+              <div className="flex justify-center py-16">
+                <div className="text-gray-500">Načítám carousel</div>
+              </div>
+            }
+          >
             <ProductCarousel products={carouselProducts} />
-            <SortingTabs />
+          </Suspense>
+            <SortingTabs sortParam={sortParam} setSortParam={setSortParam} />
+          <Suspense
+            fallback={
+              <div className="flex justify-center py-16">
+                <div className="text-gray-500">Načítám produky</div>
+              </div>
+            }
+          >
             <ProductGrid products={gridProducts} loading={gridLoading} />
+          </Suspense>
         </>
     );
 };
