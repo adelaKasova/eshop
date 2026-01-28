@@ -4,39 +4,31 @@ import { Product } from '@/types/product';
 import { ProductCard } from '../ProductCard/ProductCard';
 import { useCarousel } from '@/hooks/useCarousel';
 import { useEffect, useState } from 'react';
+import ProductCardSkeleton from '@/components/ProductCard/ProductCardSkeleton';
 
 interface ProductCarouselProps {
   products: Product[];
+  windowWidth: number;
 }
 
-export const ProductCarousel = ({ products }: ProductCarouselProps) => {
+export const ProductCarousel = ({ products, windowWidth }: ProductCarouselProps) => {
   const { currentIndex, next, prev } = useCarousel(products.length);
 
-  const [windowWidth, setWindowWidth]: number | null = useState(null);
+  const [visibleProductsCount, setVisibleProductsCount] = useState(2);
 
   useEffect(() => {
-    function handleResize() {
-      setWindowWidth(window.innerWidth);
+    if (windowWidth < 640) {
+      setVisibleProductsCount(1);
+    } else if (windowWidth < 768) {
+      setVisibleProductsCount(2);
+    } else if (windowWidth < 1024) {
+      setVisibleProductsCount(3);
+    } else {
+      setVisibleProductsCount(4);
     }
-
-    window.addEventListener('resize', handleResize);
-    handleResize();
-
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  }, [windowWidth]);
 
   const getVisibleProducts = () => {
-    if (products.length === 0) return [];
-
-    let visibleProductsCount = 4;
-    if (windowWidth < 640) {
-      visibleProductsCount = 1;
-    } else if (windowWidth < 768) {
-      visibleProductsCount = 2;
-    } else if (windowWidth < 1024) {
-      visibleProductsCount = 3;
-    }
-
     const items = [];
     for (let i = 0; i < visibleProductsCount; i++) {
       items.push(products[(currentIndex + i) % products.length]);
@@ -46,8 +38,6 @@ export const ProductCarousel = ({ products }: ProductCarouselProps) => {
 
   const visibleProducts = getVisibleProducts();
 
-  if (products.length === 0) return null;
-
   return (
     <div className="my-8">
       <h2 className="text-2xl font-light text-black mb-4">Nejprodávanější</h2>
@@ -55,6 +45,7 @@ export const ProductCarousel = ({ products }: ProductCarouselProps) => {
       <div className="bg-secondary pb-4 flex items-center gap-4">
         <button
           onClick={prev}
+          disabled={products.length === 0}
           className="p-2 hover:bg-gray-200 rounded-full transition-colors flex-shrink-0"
           aria-label="Previous"
         >
@@ -75,16 +66,19 @@ export const ProductCarousel = ({ products }: ProductCarouselProps) => {
 
         <div className="flex-grow overflow-hidden">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4">
-            {visibleProducts.map((product, index) => (
-              <div key={`${product.id}-${index}`} className="min-w-0">
-                <ProductCard product={product} />
-              </div>
-            ))}
+            {products.length === 0
+              ? [...Array(visibleProductsCount)].map((_, i) => <ProductCardSkeleton key={i} />)
+              : visibleProducts.map((product, index) => (
+                  <div key={`${product.id}-${index}`} className="min-w-0">
+                    <ProductCard product={product} />
+                  </div>
+                ))}
           </div>
         </div>
 
         <button
           onClick={next}
+          disabled={products.length === 0}
           className="p-2 hover:bg-gray-200 rounded-full transition-colors flex-shrink-0"
           aria-label="Next"
         >
