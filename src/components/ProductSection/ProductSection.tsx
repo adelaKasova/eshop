@@ -19,10 +19,24 @@ export const ProductSection = () => {
 
   const [error, setError] = useState<string | null>(null);
 
-  const [sortParam, setSortParam] = useState<number | null>(0);
-  const [categoryParam, setCategoryParam] = useState<number | null>(18855843);
+  const [sortParam, setSortParam] = useState<number>(0);
+  const [categoryParam, setCategoryParam] = useState<number>(18855843);
 
   const [windowWidth, setWindowWidth] = useState<number | null>(null);
+
+  const [visibleProductsCount, setVisibleProductsCount] = useState(4);
+
+  useEffect(() => {
+    if (windowWidth !== null && windowWidth < 640) {
+      setVisibleProductsCount(1);
+    } else if (windowWidth !== null && windowWidth < 768) {
+      setVisibleProductsCount(2);
+    } else if (windowWidth !== null && windowWidth < 1024) {
+      setVisibleProductsCount(3);
+    } else {
+      setVisibleProductsCount(4);
+    }
+  }, [windowWidth]);
 
   useEffect(() => {
     function handleResize() {
@@ -57,11 +71,11 @@ export const ProductSection = () => {
     const fetchGridData = async () => {
       setGridProducts([]);
       try {
-        const orderBy = sortParam ? parseInt(sortParam) : 0;
+        const orderBy: number = sortParam ? parseInt(sortParam) : 0;
         const result = await getProducts({ orderBy, id: categoryParam });
         setGridProducts(result.products);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load products');
+        setError(err instanceof Error ? err.message : 'Nepodařilo se načíst produkty');
       }
     };
 
@@ -86,11 +100,11 @@ export const ProductSection = () => {
       <Breadcrums breadcrums={breadcrums} />
       <CategoryFilters categoryParam={categoryParam} setCategoryParam={setCategoryParam} />
 
-      <ProductCarousel windowWidth={windowWidth} products={carouselProducts} />
+      <ProductCarousel visibleProductsCount={visibleProductsCount} products={carouselProducts} />
 
       <SortingTabs sortParam={sortParam} setSortParam={setSortParam} />
 
-      <ProductGrid windowWidth={windowWidth} products={gridProducts} />
+      <ProductGrid visibleProductsCount={visibleProductsCount} products={gridProducts} />
     </>
   );
 };

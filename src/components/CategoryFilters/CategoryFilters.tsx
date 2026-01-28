@@ -1,5 +1,10 @@
 'use client';
 
+interface CategoryFiltersProps {
+  categoryParam: number;
+  setCategoryParam: (categoryId: number) => void;
+}
+
 interface categoryInterface {
   id: number;
   name: string;
@@ -15,7 +20,7 @@ const CATEGORIES: categoryInterface[] = [
   { id: 18885988, name: 'Smart Garden' },
 ];
 
-export const CategoryFilters = ({ categoryParam, setCategoryParam }) => {
+export const CategoryFilters = ({ categoryParam, setCategoryParam } : CategoryFiltersProps) => {
 
   const handleSelect = (categoryId: number) => {
     setCategoryParam(categoryId);

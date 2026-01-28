@@ -3,30 +3,15 @@
 import { Product } from '@/types/product';
 import { ProductCard } from '../ProductCard/ProductCard';
 import { useCarousel } from '@/hooks/useCarousel';
-import { useEffect, useState } from 'react';
 import ProductCardSkeleton from '@/components/ProductCard/ProductCardSkeleton';
 
 interface ProductCarouselProps {
   products: Product[];
-  windowWidth: number;
+  visibleProductsCount: number;
 }
 
-export const ProductCarousel = ({ products, windowWidth }: ProductCarouselProps) => {
+export const ProductCarousel = ({ products, visibleProductsCount }: ProductCarouselProps) => {
   const { currentIndex, next, prev } = useCarousel(products.length);
-
-  const [visibleProductsCount, setVisibleProductsCount] = useState(2);
-
-  useEffect(() => {
-    if (windowWidth < 640) {
-      setVisibleProductsCount(1);
-    } else if (windowWidth < 768) {
-      setVisibleProductsCount(2);
-    } else if (windowWidth < 1024) {
-      setVisibleProductsCount(3);
-    } else {
-      setVisibleProductsCount(4);
-    }
-  }, [windowWidth]);
 
   const getVisibleProducts = () => {
     const items = [];
