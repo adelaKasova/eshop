@@ -1,27 +1,28 @@
 'use client';
 
-import { Suspense, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getProducts } from '@/services/productService';
-import { Product } from '@/types/product';
+import { Breadcrumb, Product } from '@/types/product';
 import { CategoryFilters } from '../CategoryFilters/CategoryFilters';
 import { ProductCarousel } from '../ProductCarousel/ProductCarousel';
 import { SortingTabs } from '../SortingTabs/SortingTabs';
 import { ProductGrid } from '../ProductGrid/ProductGrid';
 import { Header } from '../Header/Header';
-import ProductCardSkeleton from '@/components/ProductCard/ProductCardSkeleton';
+import { Breadcrums } from '../Breadcrums/Breadcrums';
 
 export const ProductSection = () => {
   const [carouselProducts, setCarouselProducts] = useState<Product[]>([]);
   const [categoryName, setCategoryName] = useState<string | null>(null);
+  const [breadcrums, setBreadcrums] = useState<Breadcrumb[] | undefined>();
 
   const [gridProducts, setGridProducts] = useState<Product[]>([]);
 
   const [error, setError] = useState<string | null>(null);
 
   const [sortParam, setSortParam] = useState<number | null>(0);
-  const [categoryParam, setCategoryParam] = useState<number | null>(null);
+  const [categoryParam, setCategoryParam] = useState<number | null>(18855843);
 
-  const [windowWidth, setWindowWidth]: number | null = useState(null);
+  const [windowWidth, setWindowWidth] = useState<number | null>(null);
 
   useEffect(() => {
     function handleResize() {
@@ -36,10 +37,14 @@ export const ProductSection = () => {
 
   useEffect(() => {
     const fetchCarouselData = async () => {
+      setCarouselProducts([]);
+      setCategoryName(null);
+      setBreadcrums(undefined);
       try {
         const result = await getProducts({ orderBy: 0, id: categoryParam });
         setCarouselProducts(result.products.slice(0, 10));
         setCategoryName(result.categoryName);
+        setBreadcrums(result.breadcrums);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Nepodařilo se načíst produkty');
       }
@@ -50,6 +55,7 @@ export const ProductSection = () => {
 
   useEffect(() => {
     const fetchGridData = async () => {
+      setGridProducts([]);
       try {
         const orderBy = sortParam ? parseInt(sortParam) : 0;
         const result = await getProducts({ orderBy, id: categoryParam });
@@ -77,7 +83,7 @@ export const ProductSection = () => {
   return (
     <>
       <Header categoryName={categoryName} />
-
+      <Breadcrums breadcrums={breadcrums} />
       <CategoryFilters categoryParam={categoryParam} setCategoryParam={setCategoryParam} />
 
       <ProductCarousel windowWidth={windowWidth} products={carouselProducts} />
@@ -85,7 +91,6 @@ export const ProductSection = () => {
       <SortingTabs sortParam={sortParam} setSortParam={setSortParam} />
 
       <ProductGrid windowWidth={windowWidth} products={gridProducts} />
-
     </>
   );
 };

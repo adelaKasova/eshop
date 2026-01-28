@@ -1,7 +1,8 @@
-import { Product, ApiResponse, FilterParameters } from '../types/product';
+import { Product, ApiResponse, FilterParameters, Breadcrumb } from '../types/product';
 
 export interface ProductsResult {
     products: Product[];
+    breadcrums: Breadcrumb[] | undefined;
     categoryName: string | null;
 }
 
@@ -53,10 +54,13 @@ export async function getProducts(
 
         // Extract category name from breadcrumbs
         const categoryName = data.breadcrumbs?.[data.breadcrumbs?.length - 1]?.category?.name ?? null;
+        const breadcrums = data.breadcrumbs;
+        console.log(data.breadcrumbs)
 
         return {
             products: data.data,
-            categoryName
+            categoryName,
+            breadcrums
         };
     } catch (error) {
         console.error('Failed to fetch products:', error);
