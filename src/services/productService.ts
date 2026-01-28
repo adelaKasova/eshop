@@ -1,4 +1,4 @@
-import { Product, ApiResponse, FilterParameters, Breadcrumb } from '../types/product';
+import { Product, ApiResponse, FilterParameters } from '../types/product';
 
 export interface ProductsResult {
     products: Product[];
@@ -9,7 +9,7 @@ export interface ProductsResult {
 const API_URL = '/api/products';
 
 const DEFAULT_FILTER: FilterParameters = {
-    id: 18855843, // Notebooks category
+    id: 18855843,
     isInStockOnly: false,
     newsOnly: false,
     wearType: 0,
@@ -27,8 +27,6 @@ export async function getProducts(
     filterOverrides: Partial<FilterParameters> = {}
 ): Promise<ProductsResult> {
     try {
-        // Client-side fetch to local proxy
-        // Browser automatically handles Host, Origin, Cookie, etc. relative to current domain
         const response = await fetch(API_URL, {
             method: 'POST',
             headers: {
@@ -54,11 +52,11 @@ export async function getProducts(
         }
 
         // Extract category name from breadcrumbs
-        const categoryName = data.breadcrumbs?.[0]?.category?.name ?? null;
+        const categoryName = data.breadcrumbs?.[data.breadcrumbs?.length - 1]?.category?.name ?? null;
 
         return {
             products: data.data,
-            categoryName,
+            categoryName
         };
     } catch (error) {
         console.error('Failed to fetch products:', error);
