@@ -8,12 +8,12 @@ import { ProductCarousel } from '../ProductCarousel/ProductCarousel';
 import { SortingTabs } from '../SortingTabs/SortingTabs';
 import { ProductGrid } from '../ProductGrid/ProductGrid';
 import { Header } from '../Header/Header';
-import { Breadcrums } from '../Breadcrums/Breadcrums';
+import { Breadcrumbs } from '../Breadcrums/Breadcrumbs';
 
 export const ProductSection = () => {
   const [carouselProducts, setCarouselProducts] = useState<Product[]>([]);
   const [categoryName, setCategoryName] = useState<string | null>(null);
-  const [breadcrums, setBreadcrums] = useState<Breadcrumb[] | undefined>();
+  const [breadcrumbs, setBreadcrumbs] = useState<Breadcrumb[] | undefined>();
 
   const [gridProducts, setGridProducts] = useState<Product[]>([]);
 
@@ -53,12 +53,12 @@ export const ProductSection = () => {
     const fetchCarouselData = async () => {
       setCarouselProducts([]);
       setCategoryName(null);
-      setBreadcrums(undefined);
+      setBreadcrumbs(undefined);
       try {
         const result = await getProducts({ orderBy: 0, id: categoryParam });
         setCarouselProducts(result.products.slice(0, 10));
         setCategoryName(result.categoryName);
-        setBreadcrums(result.breadcrums);
+        setBreadcrumbs(result.breadcrumbs);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Nepodařilo se načíst produkty');
       }
@@ -71,7 +71,7 @@ export const ProductSection = () => {
     const fetchGridData = async () => {
       setGridProducts([]);
       try {
-        const orderBy: number = sortParam ? parseInt(sortParam) : 0;
+        const orderBy: number = sortParam ? sortParam : 0;
         const result = await getProducts({ orderBy, id: categoryParam });
         setGridProducts(result.products);
       } catch (err) {
@@ -97,7 +97,7 @@ export const ProductSection = () => {
   return (
     <>
       <Header categoryName={categoryName} />
-      <Breadcrums breadcrums={breadcrums} />
+      <Breadcrumbs breadcrumbs={breadcrumbs} />
       <CategoryFilters categoryParam={categoryParam} setCategoryParam={setCategoryParam} />
 
       <ProductCarousel visibleProductsCount={visibleProductsCount} products={carouselProducts} />

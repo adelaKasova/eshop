@@ -2,7 +2,7 @@ import { Product, ApiResponse, FilterParameters, Breadcrumb } from '../types/pro
 
 export interface ProductsResult {
     products: Product[];
-    breadcrums: Breadcrumb[] | undefined;
+    breadcrumbs: Breadcrumb[] | undefined;
     categoryName: string | null;
 }
 
@@ -54,13 +54,12 @@ export async function getProducts(
 
         // Extract category name from breadcrumbs
         const categoryName = data.breadcrumbs?.[data.breadcrumbs?.length - 1]?.category?.name ?? null;
-        const breadcrums = data.breadcrumbs;
-        console.log(data.breadcrumbs)
+        const breadcrumbs = data.breadcrumbs;
 
         return {
             products: data.data,
             categoryName,
-            breadcrums
+            breadcrumbs
         };
     } catch (error) {
         console.error('Failed to fetch products:', error);

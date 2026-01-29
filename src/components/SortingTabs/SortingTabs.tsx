@@ -1,6 +1,11 @@
 'use client';
 
-export const SortingTabs = ({ sortParam, setSortParam }) => {
+interface SortingTabsProps {
+  sortParam: number;
+  setSortParam: (param: number) => void;
+}
+
+export const SortingTabs = ({ sortParam, setSortParam }: SortingTabsProps) => {
   const TABS = ['Nejprodávanější', 'Od nejlevnějšího', 'Od nejdražšího'];
 
   const handleChange = (index: number) => {
